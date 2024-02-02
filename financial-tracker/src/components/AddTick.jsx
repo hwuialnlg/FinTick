@@ -2,8 +2,7 @@ import '../App.css';
 import React from 'react';
 import { useState} from 'react';
 import { TextInput } from "@tremor/react";
-import './Tick'
-import { Card, SparkAreaChart, SparkBarChart, SparkLineChart, Text, Title, Metric } from "@tremor/react"
+import Tick from './Tick'
 
 
 function AddTick() {
@@ -29,7 +28,7 @@ function AddTick() {
             <div className='tickholder'>
                 <ul className='ticks'>
                     {
-                        tickerArray.map((item, i) => <li key={i}><Card><Metric>{item}</Metric></Card></li>)
+                        tickerArray.map((item, i) => <li key={i}><Tick ticker={item}/></li>)
                     }
                 </ul>
 
