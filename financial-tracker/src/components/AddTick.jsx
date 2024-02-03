@@ -43,7 +43,7 @@ function AddTick() {
                                 <>
                                     <Card>
                                         <Metric>{e.target.value.toUpperCase()}</Metric>
-                                        <Title>{data[0]['price']}</Title>
+                                        <Title style={{color: data[0]['change'][0] == '-' ? "red" : "green"}}>{data[0]['price']}</Title>
                                     </Card>
                                 </>
                             ])
