@@ -2,12 +2,17 @@ import '../App.css';
 import React from 'react';
 import { useState} from 'react';
 import { TextInput } from "@tremor/react";
-import Tick from './Tick'
+import {Card, Metric, Title} from "@tremor/react";
+import API_KEY from './api_key';
 
 
 function AddTick() {
     const [value, setValue] = useState("")
     const [tickerArray, setArray] = useState([]);
+    const [calledArray, setCalled] = useState([]);
+    const [data, setData] = useState([])
+
+    let API = 'https://financialmodelingprep.com/api/v3/quote-order/'
 
     return (
         <>
@@ -15,20 +20,44 @@ function AddTick() {
             <div className='inputwrapper'>
 
                 <TextInput placeholder='Add Ticker...' value={value} onChange={(e) => {setValue(e.target.value)}} onKeyDown={(e) => {
-                    if (e.key == "Enter" && !tickerArray.includes(e.target.value.toUpperCase()))
+                    if (e.key == "Enter" && !tickerArray.includes(e.target.value.toUpperCase())) {
                         setArray([
                             ...tickerArray,
                             e.target.value.toUpperCase()
-                        ])
-                        console.log(tickerArray);
+                        ]);
+
+                        useEffect(() => {
+                            axios.get(API + e.target.value.toUpperCase() + API_KEY)
+                    
+                              .then(response => {
+                                setData(response.data);})
+                    
+                              .catch(error => {
+                                console.error(error);});
+                    
+                          }, []);
+
+                        if (data.length > 0) {
+                            setCalled([
+                                ...calledArray,
+                                <>
+                                    <Card>
+                                        <Metric>{e.target.value.toUpperCase()}</Metric>
+                                        <Title>{data[0]['price']}</Title>
+                                    </Card>
+                                </>
+                            ])
+                        }
+
+                    }
                         
-                    if (e.key == "Enter") setValue("");}}/>
+                    if (e.key == "Enter") {setValue("");}}}/>
             </div>
 
             <div className='tickholder'>
                 <ul className='ticks'>
                     {
-                        tickerArray.map((item, i) => <li key={i}><Tick ticker={item}/></li>)
+                        calledArray.map((item, i) => <li key={i}>{item}</li>)
                     }
                 </ul>
 
