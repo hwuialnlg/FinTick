@@ -1,63 +1,57 @@
 import '../App.css';
 import React from 'react';
-import { useState} from 'react';
+import {useEffect, useState} from 'react';
 import { TextInput } from "@tremor/react";
 import {Card, Metric, Title} from "@tremor/react";
 import API_KEY from './api_key';
+import axios from 'axios';
+import RequestAPI from './RequestAPI';
 
 
 function AddTick() {
     const [value, setValue] = useState("")
     const [tickerArray, setArray] = useState([]);
     const [calledArray, setCalled] = useState([]);
-    const [data, setData] = useState([])
+    const [publicTraded, setPublic] = useState([])
 
-    let API = 'https://financialmodelingprep.com/api/v3/quote-order/'
+    let API = 'https://financialmodelingprep.com/api/v3/available-traded/list' + API_KEY;
+
+    useEffect(() => {
+        axios.get(API).then((res) => {
+            setPublic(res.data);
+        })
+    }, []);
 
     return (
+        
         <>
-
             <div className='inputwrapper'>
-
                 <TextInput placeholder='Add Ticker...' value={value} onChange={(e) => {setValue(e.target.value)}} onKeyDown={(e) => {
-                    if (e.key == "Enter" && !tickerArray.includes(e.target.value.toUpperCase())) {
+                    if (e.key === "Enter" && !tickerArray.includes(e.target.value.toUpperCase())) {
+  
                         setArray([
                             ...tickerArray,
                             e.target.value.toUpperCase()
                         ]);
 
-                        useEffect(() => {
-                            axios.get(API + e.target.value.toUpperCase() + API_KEY)
-                    
-                              .then(response => {
-                                setData(response.data);})
-                    
-                              .catch(error => {
-                                console.error(error);});
-                    
-                          }, []);
-
-                        if (data.length > 0) {
+                        if (publicTraded.includes(e.target.value.toUpperCase())) {
                             setCalled([
                                 ...calledArray,
-                                <>
-                                    <Card>
-                                        <Metric>{e.target.value.toUpperCase()}</Metric>
-                                        <Title style={{color: data[0]['change'][0] == '-' ? "red" : "green"}}>{data[0]['price']}</Title>
-                                    </Card>
-                                </>
+                                <RequestAPI ticker={e.target.value.toUpperCase()}></RequestAPI>
                             ])
                         }
 
-                    }
+                        }
                         
                     if (e.key == "Enter") {setValue("");}}}/>
+                
             </div>
 
             <div className='tickholder'>
                 <ul className='ticks'>
                     {
                         calledArray.map((item, i) => <li key={i}>{item}</li>)
+                        
                     }
                 </ul>
 
@@ -70,5 +64,6 @@ function AddTick() {
     )
 
 }
+
 
 export default AddTick;

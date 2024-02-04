@@ -16,17 +16,7 @@ import API_KEY from './api_key';
 function RequestAPI(props) {
     const [data, setData] = useState([])
 
-    let API = 'https://financialmodelingprep.com/api/v3/quote-order/' + props.ticker.toUpperCase() + API_KEY;
-    // https://financialmodelingprep.com/api/v3/stock/full/real-time-price/AAPL?apikey=latW4UyymiqMGIZCHcdm5oEIwUGSe2Wv
-    // https://financialmodelingprep.com/api/v3/stock/full/real-time-price/AAPL&apikey=latW4UyymiqMGIZCHcdm5oEIwUGSe2Wv
-    // console.log(API)
-    // https://financialmodelingprep.com/api/v3/quote-short/AAPL
-    // https://financialmodelingprep.com/api/v3/stock-price-change/AAPL
-    // https://financialmodelingprep.com/api/v3/quote/AAPL,FB,GOOG
-    // https://financialmodelingprep.com/api/v3/stock/full/real-time-price/AAPL
-    // https://financialmodelingprep.com/api/v3/quote-order/AAPL
-
-
+    let API = 'https://financialmodelingprep.com/api/v3/quote-order/' + props.ticker + API_KEY;
 
     useEffect(() => {
         axios.get(API)
@@ -39,26 +29,18 @@ function RequestAPI(props) {
 
       }, []);
 
-    //   console.log(data.length)
+    console.log(setData);
 
-    if (data.length > 0) {
         
-        return (
-            <>
-                <Card>
-                    {/* <Metric>AMD</Metric>
-                    <Title>176</Title> */}
-                    <Metric>{props.ticker}</Metric>
-                    <Title>{data[0]['price']}</Title>
-                </Card>
-            </>
-        );
+    return (
+        <>
+            <Card>
+                <Metric>{ticker.toUpperCase()}</Metric>
+                <Title style={{color: Math.sign(data[0]['change']) == -1 ? "red" : "green"}}>{data[0]['price']}</Title>
+            </Card>
+        </>
+    );
 
-    }
-
-    else {
-        return <></>
-    }
 
 }
 
