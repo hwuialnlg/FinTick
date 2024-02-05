@@ -1,0 +1,468 @@
+import {Card, Title, LineChart} from "@tremor/react";
+import '../App.css';
+import React from 'react';
+import {useEffect, useState} from 'react';
+import API_KEY from './api_key';
+import axios from 'axios';
+
+function SectorChart(props) {
+
+    const valueFormatter = (number) => `${new Intl.NumberFormat("us").format(number).toString()}`;
+
+    let chartdata = [
+        {
+          "date": "2024-02-02",
+          "utilitiesChangesPercentage": -0.58096,
+          "basicMaterialsChangesPercentage": 0.04171,
+          "communicationServicesChangesPercentage": 1.29357,
+          "conglomeratesChangesPercentage": null,
+          "consumerCyclicalChangesPercentage": 0.96498,
+          "consumerDefensiveChangesPercentage": 0.03953,
+          "energyChangesPercentage": -0.85607,
+          "financialChangesPercentage": null,
+          "financialServicesChangesPercentage": 0.50594,
+          "healthcareChangesPercentage": -0.24453,
+          "industrialsChangesPercentage": 0.73772,
+          "realEstateChangesPercentage": -0.02217,
+          "servicesChangesPercentage": null,
+          "technologyChangesPercentage": 1.70371
+        },
+        {
+          "date": "2024-02-01",
+          "utilitiesChangesPercentage": 1.92775,
+          "basicMaterialsChangesPercentage": 0.73773,
+          "communicationServicesChangesPercentage": -0.12998,
+          "conglomeratesChangesPercentage": null,
+          "consumerCyclicalChangesPercentage": 1.19133,
+          "consumerDefensiveChangesPercentage": 1.92425,
+          "energyChangesPercentage": -0.45785,
+          "financialChangesPercentage": null,
+          "financialServicesChangesPercentage": 0.22029,
+          "healthcareChangesPercentage": 0.8964,
+          "industrialsChangesPercentage": 1.06129,
+          "realEstateChangesPercentage": 1.39214,
+          "servicesChangesPercentage": null,
+          "technologyChangesPercentage": 0.88415
+        },
+        {
+          "date": "2024-01-31",
+          "utilitiesChangesPercentage": -1.0325,
+          "basicMaterialsChangesPercentage": -1.38168,
+          "communicationServicesChangesPercentage": -1.2153,
+          "conglomeratesChangesPercentage": null,
+          "consumerCyclicalChangesPercentage": -1.01582,
+          "consumerDefensiveChangesPercentage": -0.79031,
+          "energyChangesPercentage": -1.54333,
+          "financialChangesPercentage": null,
+          "financialServicesChangesPercentage": -0.6184,
+          "healthcareChangesPercentage": -0.77311,
+          "industrialsChangesPercentage": -1.18218,
+          "realEstateChangesPercentage": -1.13537,
+          "servicesChangesPercentage": null,
+          "technologyChangesPercentage": -1.15659
+        },
+        {
+          "date": "2024-01-30",
+          "utilitiesChangesPercentage": 0.08632,
+          "basicMaterialsChangesPercentage": 0.45891,
+          "communicationServicesChangesPercentage": -0.51105,
+          "conglomeratesChangesPercentage": null,
+          "consumerCyclicalChangesPercentage": -0.28182,
+          "consumerDefensiveChangesPercentage": 0.51542,
+          "energyChangesPercentage": 1.53939,
+          "financialChangesPercentage": null,
+          "financialServicesChangesPercentage": 0.59529,
+          "healthcareChangesPercentage": -0.4539,
+          "industrialsChangesPercentage": 0.60138,
+          "realEstateChangesPercentage": -0.27454,
+          "servicesChangesPercentage": null,
+          "technologyChangesPercentage": -0.77176
+        },
+        {
+          "date": "2024-01-29",
+          "utilitiesChangesPercentage": 0.59175,
+          "basicMaterialsChangesPercentage": 0.5988,
+          "communicationServicesChangesPercentage": 0.83343,
+          "conglomeratesChangesPercentage": null,
+          "consumerCyclicalChangesPercentage": 0.87777,
+          "consumerDefensiveChangesPercentage": 0.27409,
+          "energyChangesPercentage": 0.09371,
+          "financialChangesPercentage": null,
+          "financialServicesChangesPercentage": 0.33478,
+          "healthcareChangesPercentage": 0.76994,
+          "industrialsChangesPercentage": 0.80596,
+          "realEstateChangesPercentage": 0.59569,
+          "servicesChangesPercentage": null,
+          "technologyChangesPercentage": 0.99684
+        },
+        {
+          "date": "2024-01-26",
+          "utilitiesChangesPercentage": -0.0557,
+          "basicMaterialsChangesPercentage": -0.33229,
+          "communicationServicesChangesPercentage": 0.49469,
+          "conglomeratesChangesPercentage": null,
+          "consumerCyclicalChangesPercentage": 0.17638,
+          "consumerDefensiveChangesPercentage": 0.19784,
+          "energyChangesPercentage": 0.85854,
+          "financialChangesPercentage": null,
+          "financialServicesChangesPercentage": 0.2909,
+          "healthcareChangesPercentage": -0.31827,
+          "industrialsChangesPercentage": -0.24638,
+          "realEstateChangesPercentage": -0.24265,
+          "servicesChangesPercentage": null,
+          "technologyChangesPercentage": -0.33802
+        },
+        {
+          "date": "2024-01-25",
+          "utilitiesChangesPercentage": 0.419,
+          "basicMaterialsChangesPercentage": 0.08634,
+          "communicationServicesChangesPercentage": 1.00341,
+          "conglomeratesChangesPercentage": null,
+          "consumerCyclicalChangesPercentage": -0.26501,
+          "consumerDefensiveChangesPercentage": 0.61477,
+          "energyChangesPercentage": 1.06829,
+          "financialChangesPercentage": null,
+          "financialServicesChangesPercentage": 0.18681,
+          "healthcareChangesPercentage": 0.21121,
+          "industrialsChangesPercentage": 0.23814,
+          "realEstateChangesPercentage": -0.07142,
+          "servicesChangesPercentage": null,
+          "technologyChangesPercentage": -0.72789
+        },
+        {
+          "date": "2024-01-24",
+          "utilitiesChangesPercentage": -1.91269,
+          "basicMaterialsChangesPercentage": -1.71847,
+          "communicationServicesChangesPercentage": -0.27893,
+          "conglomeratesChangesPercentage": null,
+          "consumerCyclicalChangesPercentage": -1.15095,
+          "consumerDefensiveChangesPercentage": -1.37055,
+          "energyChangesPercentage": 0.27743,
+          "financialChangesPercentage": null,
+          "financialServicesChangesPercentage": -0.13145,
+          "healthcareChangesPercentage": -1.45853,
+          "industrialsChangesPercentage": -1.26529,
+          "realEstateChangesPercentage": -1.79639,
+          "servicesChangesPercentage": null,
+          "technologyChangesPercentage": -0.19322
+        },
+        {
+          "date": "2024-01-23",
+          "utilitiesChangesPercentage": 0.01172,
+          "basicMaterialsChangesPercentage": -0.02887,
+          "communicationServicesChangesPercentage": 0.43701,
+          "conglomeratesChangesPercentage": null,
+          "consumerCyclicalChangesPercentage": -0.41016,
+          "consumerDefensiveChangesPercentage": 0.53812,
+          "energyChangesPercentage": 0.55865,
+          "financialChangesPercentage": null,
+          "financialServicesChangesPercentage": 0.00037,
+          "healthcareChangesPercentage": 0.13801,
+          "industrialsChangesPercentage": -0.44963,
+          "realEstateChangesPercentage": -0.88108,
+          "servicesChangesPercentage": null,
+          "technologyChangesPercentage": 0.30417
+        },
+        {
+          "date": "2024-01-22",
+          "utilitiesChangesPercentage": -0.32114,
+          "basicMaterialsChangesPercentage": 0.68747,
+          "communicationServicesChangesPercentage": -0.43146,
+          "conglomeratesChangesPercentage": null,
+          "consumerCyclicalChangesPercentage": -0.32549,
+          "consumerDefensiveChangesPercentage": -0.12889,
+          "energyChangesPercentage": 0.42742,
+          "financialChangesPercentage": null,
+          "financialServicesChangesPercentage": 0.25848,
+          "healthcareChangesPercentage": 1.08757,
+          "industrialsChangesPercentage": 0.39305,
+          "realEstateChangesPercentage": 0.08932,
+          "servicesChangesPercentage": null,
+          "technologyChangesPercentage": -0.13671
+        },
+        {
+          "date": "2024-01-19",
+          "utilitiesChangesPercentage": -0.0873,
+          "basicMaterialsChangesPercentage": 0.20645,
+          "communicationServicesChangesPercentage": 0.95693,
+          "conglomeratesChangesPercentage": null,
+          "consumerCyclicalChangesPercentage": 0.89756,
+          "consumerDefensiveChangesPercentage": -0.34601,
+          "energyChangesPercentage": 0.10401,
+          "financialChangesPercentage": null,
+          "financialServicesChangesPercentage": 0.87475,
+          "healthcareChangesPercentage": 0.08702,
+          "industrialsChangesPercentage": 0.36985,
+          "realEstateChangesPercentage": 0.66805,
+          "servicesChangesPercentage": null,
+          "technologyChangesPercentage": 1.51005
+        },
+        {
+          "date": "2024-01-18",
+          "utilitiesChangesPercentage": -0.60175,
+          "basicMaterialsChangesPercentage": 0.09203,
+          "communicationServicesChangesPercentage": 0.82064,
+          "conglomeratesChangesPercentage": null,
+          "consumerCyclicalChangesPercentage": -0.00991,
+          "consumerDefensiveChangesPercentage": 0.37258,
+          "energyChangesPercentage": -0.02695,
+          "financialChangesPercentage": null,
+          "financialServicesChangesPercentage": -0.07056,
+          "healthcareChangesPercentage": 0.67572,
+          "industrialsChangesPercentage": 0.82927,
+          "realEstateChangesPercentage": -0.61174,
+          "servicesChangesPercentage": null,
+          "technologyChangesPercentage": 0.57928
+        },
+        {
+          "date": "2024-01-17",
+          "utilitiesChangesPercentage": -0.5292,
+          "basicMaterialsChangesPercentage": 0.17476,
+          "communicationServicesChangesPercentage": 0.09136,
+          "conglomeratesChangesPercentage": null,
+          "consumerCyclicalChangesPercentage": 0.33583,
+          "consumerDefensiveChangesPercentage": 0.21759,
+          "energyChangesPercentage": 0.1811,
+          "financialChangesPercentage": null,
+          "financialServicesChangesPercentage": 0.23652,
+          "healthcareChangesPercentage": -0.05707,
+          "industrialsChangesPercentage": 0.11119,
+          "realEstateChangesPercentage": -0.28668,
+          "servicesChangesPercentage": null,
+          "technologyChangesPercentage": 0.33194
+        },
+        {
+          "date": "2024-01-16",
+          "utilitiesChangesPercentage": -0.6908,
+          "basicMaterialsChangesPercentage": -0.99902,
+          "communicationServicesChangesPercentage": -0.01254,
+          "conglomeratesChangesPercentage": null,
+          "consumerCyclicalChangesPercentage": 0.21667,
+          "consumerDefensiveChangesPercentage": -0.46517,
+          "energyChangesPercentage": -1.68235,
+          "financialChangesPercentage": null,
+          "financialServicesChangesPercentage": -0.25631,
+          "healthcareChangesPercentage": -0.32182,
+          "industrialsChangesPercentage": -0.41624,
+          "realEstateChangesPercentage": -0.12106,
+          "servicesChangesPercentage": null,
+          "technologyChangesPercentage": 0.4486
+        },
+        {
+          "date": "2024-01-15",
+          "utilitiesChangesPercentage": -0.24237,
+          "basicMaterialsChangesPercentage": -0.62453,
+          "communicationServicesChangesPercentage": 0.00672,
+          "conglomeratesChangesPercentage": null,
+          "consumerCyclicalChangesPercentage": -0.8769,
+          "consumerDefensiveChangesPercentage": -0.07064,
+          "energyChangesPercentage": -0.43916,
+          "financialChangesPercentage": null,
+          "financialServicesChangesPercentage": -0.36903,
+          "healthcareChangesPercentage": -0.14891,
+          "industrialsChangesPercentage": -0.52675,
+          "realEstateChangesPercentage": -0.29085,
+          "servicesChangesPercentage": null,
+          "technologyChangesPercentage": 0.02075
+        },
+        {
+          "date": "2024-01-12",
+          "utilitiesChangesPercentage": -0.23673,
+          "basicMaterialsChangesPercentage": -0.62303,
+          "communicationServicesChangesPercentage": 0.01081,
+          "conglomeratesChangesPercentage": null,
+          "consumerCyclicalChangesPercentage": -0.87428,
+          "consumerDefensiveChangesPercentage": -0.11522,
+          "energyChangesPercentage": -0.43965,
+          "financialChangesPercentage": null,
+          "financialServicesChangesPercentage": -0.36183,
+          "healthcareChangesPercentage": -0.15918,
+          "industrialsChangesPercentage": -0.53032,
+          "realEstateChangesPercentage": -0.29114,
+          "servicesChangesPercentage": null,
+          "technologyChangesPercentage": 0.02219
+        },
+        {
+          "date": "2024-01-11",
+          "utilitiesChangesPercentage": -1.6639,
+          "basicMaterialsChangesPercentage": -0.52089,
+          "communicationServicesChangesPercentage": -0.71072,
+          "conglomeratesChangesPercentage": null,
+          "consumerCyclicalChangesPercentage": -0.16533,
+          "consumerDefensiveChangesPercentage": 0.04673,
+          "energyChangesPercentage": -0.32384,
+          "financialChangesPercentage": null,
+          "financialServicesChangesPercentage": -0.20655,
+          "healthcareChangesPercentage": -0.21181,
+          "industrialsChangesPercentage": -0.22821,
+          "realEstateChangesPercentage": -0.32621,
+          "servicesChangesPercentage": null,
+          "technologyChangesPercentage": -0.13021
+        },
+        {
+          "date": "2024-01-10",
+          "utilitiesChangesPercentage": 0.00954,
+          "basicMaterialsChangesPercentage": 0.07227,
+          "communicationServicesChangesPercentage": 0.82443,
+          "conglomeratesChangesPercentage": null,
+          "consumerCyclicalChangesPercentage": 0.5583,
+          "consumerDefensiveChangesPercentage": -0.0143,
+          "energyChangesPercentage": -0.87003,
+          "financialChangesPercentage": null,
+          "financialServicesChangesPercentage": 0.11822,
+          "healthcareChangesPercentage": 0.22667,
+          "industrialsChangesPercentage": 0.34469,
+          "realEstateChangesPercentage": 0.02042,
+          "servicesChangesPercentage": null,
+          "technologyChangesPercentage": 0.68781
+        },
+        {
+          "date": "2024-01-09",
+          "utilitiesChangesPercentage": -0.02246,
+          "basicMaterialsChangesPercentage": -0.52109,
+          "communicationServicesChangesPercentage": 0.83651,
+          "conglomeratesChangesPercentage": null,
+          "consumerCyclicalChangesPercentage": 0.52237,
+          "consumerDefensiveChangesPercentage": 0.55938,
+          "energyChangesPercentage": -1.22446,
+          "financialChangesPercentage": null,
+          "financialServicesChangesPercentage": -0.04084,
+          "healthcareChangesPercentage": -0.27667,
+          "industrialsChangesPercentage": 0.23862,
+          "realEstateChangesPercentage": 0.27039,
+          "servicesChangesPercentage": null,
+          "technologyChangesPercentage": 0.90874
+        },
+        {
+          "date": "2024-01-08",
+          "utilitiesChangesPercentage": 0.95415,
+          "basicMaterialsChangesPercentage": 1.02598,
+          "communicationServicesChangesPercentage": 1.3957,
+          "conglomeratesChangesPercentage": null,
+          "consumerCyclicalChangesPercentage": 1.44912,
+          "consumerDefensiveChangesPercentage": 0.76166,
+          "energyChangesPercentage": 0.37117,
+          "financialChangesPercentage": null,
+          "financialServicesChangesPercentage": 0.52011,
+          "healthcareChangesPercentage": 1.08439,
+          "industrialsChangesPercentage": 0.90983,
+          "realEstateChangesPercentage": 1.26693,
+          "servicesChangesPercentage": null,
+          "technologyChangesPercentage": 2.20376
+        },
+        {
+          "date": "2024-01-05",
+          "utilitiesChangesPercentage": 0.48359,
+          "basicMaterialsChangesPercentage": 0.38834,
+          "communicationServicesChangesPercentage": -0.03316,
+          "conglomeratesChangesPercentage": null,
+          "consumerCyclicalChangesPercentage": 0.3654,
+          "consumerDefensiveChangesPercentage": -0.27685,
+          "energyChangesPercentage": -0.37564,
+          "financialChangesPercentage": null,
+          "financialServicesChangesPercentage": 0.25044,
+          "healthcareChangesPercentage": 0.24647,
+          "industrialsChangesPercentage": 0.35521,
+          "realEstateChangesPercentage": 0.34379,
+          "servicesChangesPercentage": null,
+          "technologyChangesPercentage": 0.07182
+        },
+        {
+          "date": "2024-01-04",
+          "utilitiesChangesPercentage": -0.32187,
+          "basicMaterialsChangesPercentage": -0.20286,
+          "communicationServicesChangesPercentage": -0.65464,
+          "conglomeratesChangesPercentage": null,
+          "consumerCyclicalChangesPercentage": -0.19834,
+          "consumerDefensiveChangesPercentage": -0.06571,
+          "energyChangesPercentage": -1.79372,
+          "financialChangesPercentage": null,
+          "financialServicesChangesPercentage": 0.13039,
+          "healthcareChangesPercentage": 0.37883,
+          "industrialsChangesPercentage": -0.04739,
+          "realEstateChangesPercentage": -0.01434,
+          "servicesChangesPercentage": null,
+          "technologyChangesPercentage": -0.09823
+        },
+        {
+          "date": "2024-01-03",
+          "utilitiesChangesPercentage": 0.24029,
+          "basicMaterialsChangesPercentage": -0.0199,
+          "communicationServicesChangesPercentage": 0.58676,
+          "conglomeratesChangesPercentage": null,
+          "consumerCyclicalChangesPercentage": -0.81959,
+          "consumerDefensiveChangesPercentage": -0.7872,
+          "energyChangesPercentage": 1.43711,
+          "financialChangesPercentage": null,
+          "financialServicesChangesPercentage": -0.09224,
+          "healthcareChangesPercentage": -0.40661,
+          "industrialsChangesPercentage": -1.0191,
+          "realEstateChangesPercentage": -1.07776,
+          "servicesChangesPercentage": null,
+          "technologyChangesPercentage": -0.18149
+        },
+        {
+          "date": "2024-01-02",
+          "utilitiesChangesPercentage": 1.34171,
+          "basicMaterialsChangesPercentage": -0.0311,
+          "communicationServicesChangesPercentage": -0.14682,
+          "conglomeratesChangesPercentage": null,
+          "consumerCyclicalChangesPercentage": -0.53465,
+          "consumerDefensiveChangesPercentage": 1.23823,
+          "energyChangesPercentage": 0.08486,
+          "financialChangesPercentage": null,
+          "financialServicesChangesPercentage": 0.37826,
+          "healthcareChangesPercentage": 1.40525,
+          "industrialsChangesPercentage": -0.2989,
+          "realEstateChangesPercentage": 0.86164,
+          "servicesChangesPercentage": null,
+          "technologyChangesPercentage": -1.3372
+        },
+        {
+          "date": "2024-01-01",
+          "utilitiesChangesPercentage": -0.01347,
+          "basicMaterialsChangesPercentage": -0.14536,
+          "communicationServicesChangesPercentage": -0.15074,
+          "conglomeratesChangesPercentage": null,
+          "consumerCyclicalChangesPercentage": -0.58877,
+          "consumerDefensiveChangesPercentage": 0.18141,
+          "energyChangesPercentage": -0.41917,
+          "financialChangesPercentage": null,
+          "financialServicesChangesPercentage": -0.34753,
+          "healthcareChangesPercentage": -0.08193,
+          "industrialsChangesPercentage": -0.21821,
+          "realEstateChangesPercentage": -0.52216,
+          "servicesChangesPercentage": null,
+          "technologyChangesPercentage": -0.5708
+        }
+    ]
+
+    return (
+        <div className="chart">
+            <Card>
+
+                <Title>Sector Performance Past 50 Days</Title>
+
+                <LineChart
+                    className="mt-6"
+                    data={chartdata.reverse()}
+                    index="date"
+                    categories={["utilitiesChangesPercentage", "basicMaterialsChangesPercentage", "communicationServicesChangesPercentage", "conglomeratesChangesPercentage", "consumerCyclicalChangesPercentage", 
+                                "consumerDefensiveChangesPercentage", "energyChangesPercentage", "financialChangesPercentage", "financialServicesChangesPercentage", "healthcareChangesPercentage", "industrialsChangesPercentage",
+                                "realEstateChangesPercentage", "servicesChangesPercentage", "technologyChangesPercentage"]}
+                    colors={["emerald", "gray", "red", "black", "green", "pink", "purple", "blue", "teal", "orange", "yellow", "amber", "rose", "emerald", "fuchsia"]}
+                    valueFormatter={valueFormatter}
+                    yAxisWidth={10}
+                    showLegend={false}
+                    maxValue={3}
+                    showGridLines={true}
+                    // rotateLabelX={{angle: 360}}
+                    />
+
+            </Card>
+        </div>
+
+    )
+}
+
+export default SectorChart;
