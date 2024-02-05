@@ -18,28 +18,33 @@ function RequestAPI(props) {
 
     let API = 'https://financialmodelingprep.com/api/v3/quote-order/' + props.ticker + API_KEY;
 
+    console.log(API);
+
     useEffect(() => {
         axios.get(API)
-
           .then(response => {
-            setData(response.data);})
+          setData(response.data);})
+
 
           .catch(error => {
             console.error(error);});
 
       }, []);
 
-    console.log(setData);
+    if (data.length > 0) {
 
-        
-    return (
+      return (
         <>
             <Card>
-                <Metric>{ticker.toUpperCase()}</Metric>
+                <Metric>{props.ticker.toUpperCase()}</Metric>
                 <Title style={{color: Math.sign(data[0]['change']) == -1 ? "red" : "green"}}>{data[0]['price']}</Title>
             </Card>
         </>
     );
+    }
+
+        
+
 
 
 }

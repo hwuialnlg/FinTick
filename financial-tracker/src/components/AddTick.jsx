@@ -13,12 +13,14 @@ function AddTick() {
     const [tickerArray, setArray] = useState([]);
     const [calledArray, setCalled] = useState([]);
     const [publicTraded, setPublic] = useState([])
+    const [modify, setModify] = useState(true)
 
     let API = 'https://financialmodelingprep.com/api/v3/available-traded/list' + API_KEY;
 
     useEffect(() => {
         axios.get(API).then((res) => {
-            setPublic(res.data);
+            // console.log(res.data);
+            setPublic(res.data.map((item) => item['symbol']));
         })
     }, []);
 
@@ -34,10 +36,12 @@ function AddTick() {
                             e.target.value.toUpperCase()
                         ]);
 
+                        console.log(publicTraded)
+
                         if (publicTraded.includes(e.target.value.toUpperCase())) {
                             setCalled([
                                 ...calledArray,
-                                <RequestAPI ticker={e.target.value.toUpperCase()}></RequestAPI>
+                                <RequestAPI ticker={e.target.value.toUpperCase()}/>
                             ])
                         }
 
